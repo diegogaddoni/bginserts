@@ -14,6 +14,9 @@ vResourcesBox = false;
 vPlayerBox = false;
 vWorkersBox = true;
 
+vLids = true;
+vBoxes = false;
+
 internal_fillet = 2;
 internal_rounding = 10;
 

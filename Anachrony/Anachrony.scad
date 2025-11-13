@@ -17,20 +17,24 @@ if (vALL) {
 }
 
 if (vALL || vNucleiBox) 
-    translate([coll_width+delta, b_width+delta, vpt_height+delta]) box_nuclei();
+    if (vBoxes) translate([coll_width+delta, b_width+delta, vpt_height+delta]) box_nuclei();
 
 if (vALL || vResourcesBox) 
-    translate([250-res_length, b_width+delta+timeline_width+delta+res_width+delta+sbt_width, 0]) rot(-90) resources_box();
+    if (vBoxes) translate([250-res_length, b_width+delta+timeline_width+delta+res_width+delta+sbt_width, 0]) rot(-90) resources_box();
 
 
-if (vALL || vWorkersBox) 
-    translate([coll_width+delta, b_width+delta+ec_length+delta,0]) WorkersBox();    
+if (vALL || vWorkersBox) {
+    if (vBoxes) translate([coll_width+delta, b_width+delta+ec_length+delta,0]) WorkersBox();    
+    if (vLids) translate([coll_width+delta - box_width, b_width+delta+ec_length+delta, w_height - wall_thickness]) WorkersLid();
+}
 
 if (vALL || vPlayerBox) {
-    translate([coll_width+delta,b_width+timeline_width+res_width+sbt_width+delta*4,0]) player_box();
-    translate([coll_width+delta+pb_width+delta,b_width+timeline_width+res_width+sbt_width+delta*4,0]) player_box();
-    translate([coll_width+delta,b_width+timeline_width+res_width+sbt_width+delta*4,pb_height]) player_box();
-    translate([coll_width+delta+pb_width+delta,b_width+timeline_width+res_width+sbt_width+delta*4,pb_height]) player_box();
+    if (vBoxes) {
+        translate([coll_width+delta,b_width+timeline_width+res_width+sbt_width+delta*4,0]) player_box();
+        translate([coll_width+delta+pb_width+delta,b_width+timeline_width+res_width+sbt_width+delta*4,0]) player_box();
+        translate([coll_width+delta,b_width+timeline_width+res_width+sbt_width+delta*4,pb_height]) player_box();
+        translate([coll_width+delta+pb_width+delta,b_width+timeline_width+res_width+sbt_width+delta*4,pb_height]) player_box();
+    }
 }
 
 module OldBox(position=[0,0,0], size=[10,10,10], rot=0, text="") {
@@ -97,17 +101,24 @@ module WorkersBox() {
                     if (y == 0) {
                         translate([ (w_width-wall_thickness)/3*x + wall_thickness +ws_width/2, wall_thickness+ws_length, wall_thickness ]) 
                             workers_space() ;
-                        translate([ (w_width-wall_thickness)/3*x + wall_thickness +ws_width/2, 0, wall_thickness ]) 
-                            #fingerspace(height=w_height*2, cyl_rad=ws_top_width/3, wall_space_distance_v=internal_fillet) ;
+                        translate([ (w_width-wall_thickness)/3*x + wall_thickness +ws_width/2, 0, 0 ]) 
+                            #fingerspace(height=w_height*2, cyl_rad=ws_top_width/2*1.5, cube_width = ws_top_width/2, wall_space_distance_o=internal_fillet*2, fillet_ang=120) ;
                     } else {
                         translate([ (w_width-wall_thickness)/3*x + wall_thickness +ws_width/2,  w_length-(wall_thickness*2+ws_length), wall_thickness ]) 
                             yflip() workers_space() ;
-                        translate([ (w_width-wall_thickness)/3*x + wall_thickness +ws_width/2,  w_length-wall_thickness/2*3, wall_thickness ]) 
-                            yflip() fingerspace(height=w_height*2, cyl_rad=ws_top_width/3, wall_space_distance_v=internal_fillet) ;
+                        translate([ (w_width-wall_thickness)/3*x + wall_thickness +ws_width/2,  w_length-wall_thickness/2*3, 0 ]) 
+                            yflip() fingerspace(height=w_height*2, cyl_rad=ws_top_width/2, wall_space_distance_o=internal_fillet*2, fillet_ang=120) ;
                     }
                 }
 
             }
+}
+
+module WorkersLid() {
+    //Coperchio Box per lavoratori (6 spazi, 2 per ingegneri e scienziati, 1 per amministratori e geni)
+    SlidingBoxLidWithLabel(width=w_width, length=w_length, height=w_height, 
+                        lid_thickness = wall_thickness+1, wall_thickness = wall_thickness,
+                        text_width = w_length/2, text_height = w_width/2, text_str = "WORKERS", label_rotated = true, label_background_colour = "White");
 }
 
 module workers_space() {
@@ -124,6 +135,7 @@ module workers_space() {
             }
             //Attacchiamo 
             position(BOTTOM) orient(BOT) {
+                up (-bitspace)
                 cuboid([ws_width, w_height, ws_length-ws_top_length],rounding = internal_fillet, except = [BACK, BOT], anchor=BOT); {
                     //cylinder(h=w_height*2, r=ws_top_width, center=false);
                 }
@@ -133,7 +145,8 @@ module workers_space() {
         }
     }
 }
-
+/*
 translate([-50,0,0])
     yflip()
     workers_space() ;
+*/
