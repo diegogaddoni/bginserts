@@ -116,9 +116,9 @@ module WorkersBox() {
 
 module WorkersLid() {
     //Coperchio Box per lavoratori (6 spazi, 2 per ingegneri e scienziati, 1 per amministratori e geni)
-    SlidingBoxLidWithLabel(width=w_width, length=w_length, height=w_height, 
+    SlidingBoxLidWithLabel(width=w_width, length=w_length, /*height=w_height, */
                         lid_thickness = wall_thickness+1, wall_thickness = wall_thickness,
-                        text_width = w_length/2, text_height = w_width/2, text_str = "WORKERS", label_rotated = true, label_background_colour = "White");
+                        text_str = "WORKERS", material_colour = "purple", label_background_colour = "White", label_colour="grey",);
 }
 
 module workers_space() {
